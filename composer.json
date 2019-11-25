@@ -1,0 +1,23 @@
+{
+    "name": "utrust/module-payment",
+    "description": "Magento 2 module for Utrust payment gateway",
+    "version": "1.0.0",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Utrust Team",
+            "email": "team@utrust.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Utrust\\Payment\\": ""
+        },
+        "files": [
+            "registration.php"
+        ]
+    }
+}
