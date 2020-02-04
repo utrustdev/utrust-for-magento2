@@ -6,7 +6,8 @@
 				<active>1</active>
 				<model>Utrust\Payment\Model\Payment\Utrust</model>
 				<order_status>pending</order_status>
-				<title>Utrust</title>
+				<title>Utrust – Pay with crypto</title>
+				<instructions>You will get redirected to the Utrust payment widget.</instructions>
 				<allowspecific>0</allowspecific>
 				<group>offline</group>
 			</utrust>

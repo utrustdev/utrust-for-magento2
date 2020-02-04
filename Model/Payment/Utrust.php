@@ -16,12 +16,22 @@ class Utrust extends \Magento\Payment\Model\Method\AbstractMethod
     }
 
     /**
+     * (Override) Get title text from config
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return trim($this->getConfigData('frontend/title'));
+    }
+
+    /**
      * Get instructions text from config
      *
      * @return string
      */
     public function getInstructions()
     {
-        return trim($this->getConfigData('instructions'));
+        return trim($this->getConfigData('frontend/instructions'));
     }
 }

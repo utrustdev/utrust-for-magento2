@@ -86,7 +86,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $msg = implode("", array_map(function ($v, $k) {
             return $k . $v;
         }, $payload, array_keys($payload)));
-        $secret = $this->getConfig('payment/utrust/webhook_secret');
+        $secret = $this->getConfig('payment/utrust/credentials/webhook_secret');
         $signed_message = hash_hmac("sha256", $msg, $secret);
         return $signed_message;
     }

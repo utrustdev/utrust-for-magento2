@@ -14,9 +14,9 @@ class Api
         \Utrust\Payment\Helper\Data $helper
     ) {
         $this->helper = $helper;
-        $sandbox = $helper->getConfig('payment/utrust/sandbox');
+        $sandbox = $helper->getConfig('payment/utrust/credentials/sandbox');
         $this->apiUrl = $sandbox ? self::API_SANDBOX_URL : self::API_PRODUCTION_URL;
-        $this->apiKey = $helper->getConfig('payment/utrust/api_key');
+        $this->apiKey = $helper->getConfig('payment/utrust/credentials/api_key');
     }
 
     public function pay($order)

@@ -3,43 +3,71 @@
 	<system>
 		<section id="payment" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="1000" translate="label">
 			<group id="utrust" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
-				<label>Utrust</label>
-				<field id="active" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
+                <label>Utrust</label>
+                <comment><![CDATA[
+                	<table>
+                		<td style="display: inline-block; vertical-align: middle; margin: 0 20px 0 0px;">
+                			<a href="https://utrust.com">
+                    			<img src="https://assets.utrust.com/logo-kit/png/logo/no-background/business-blue/logo-business-color-no-bg@2x.png" style="padding-left: 2rem;" alt="Utrust" />
+                    		</a>
+                    	</td>
+                    	<td style="display: inline-block; vertical-align: middle; width: 50%;">
+		                    Accept crypto payments, easily.
+                    	</td>
+                   	</table>
+                ]]></comment>
+				<field id="active" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="20" translate="label" type="select">
 					<label>Enabled</label>
 					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
 				</field>
-				<field id="title" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="20" translate="label" type="text">
-					<label>Title</label>
-				</field>
-				<field id="api_key" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="22" translate="label" type="text">
-					<label>Api Key</label>
-				</field>
-				<field id="webhook_secret" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="24" translate="label" type="text">
-					<label>Webhook Secret</label>
-				</field>
-				<field id="order_status" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="30" translate="label" type="select">
-					<label>New Order Status</label>
-					<source_model>Magento\Sales\Model\Config\Source\Order\Status\NewStatus</source_model>
-				</field>
-				<field id="allowspecific" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="40" translate="label" type="allowspecific">
-					<label>Payment from Applicable Countries</label>
-					<source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
-				</field>
-				<field id="specificcountry" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="50" translate="label" type="multiselect">
-					<label>Payment from Applicable Countries</label>
-					<source_model>Magento\Directory\Model\Config\Source\Country</source_model>
-					<can_be_empty>1</can_be_empty>
-				</field>
-				<field id="sort_order" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="60" translate="label" type="text">
-					<label>Sort Order</label>
-				</field>
-				<field id="instructions" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="70" translate="label" type="textarea">
-					<label>Instructions</label>
-				</field>
-				<field id="sandbox" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-					<label>Sandbox</label>
-					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-				</field>
+				<group id="credentials" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="30" translate="label">
+					<label>Credentials</label>
+					<comment><![CDATA[
+						You need an Utrust Merchant account to start accepting crypto payments on your Magento store.</br>
+						Please signup on 
+							<a href="https://merchants.sandbox-utrust.com" target="_blank">Test</a> 
+							and/or 
+							<a href="https://merchants.utrust.com" target="_blank">Production</a>
+						environment.
+					]]></comment>
+					<field id="sandbox" translate="label" type="select" sortOrder="31" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Test mode</label>
+	                    <comment><![CDATA[Select <b>Yes</b> for testing (Sandbox), <b>No</b> when you are ready to go live (Production).]]></comment>
+						<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					</field>
+					<field id="api_key" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="32" translate="label" type="text">
+						<label>Api Key</label>
+					</field>
+					<field id="webhook_secret" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="33" translate="label" type="password">
+						<label>Webhook Secret</label>
+					</field>
+				</group>
+				<group id="options" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="40" translate="label">
+					<label>Options</label>
+					<field id="order_status" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="41" translate="label" type="select">
+						<label>New Order Status</label>
+						<source_model>Magento\Sales\Model\Config\Source\Order\Status\NewStatus</source_model>
+					</field>
+					<field id="allowspecific" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="42" translate="label" type="allowspecific">
+						<label>Payment from Applicable Countries</label>
+						<source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+					</field>
+					<field id="specificcountry" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="43" translate="label" type="multiselect">
+						<label>Payment from Applicable Countries</label>
+						<source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+						<can_be_empty>1</can_be_empty>
+					</field>
+				</group>
+				<group id="frontend" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="50" translate="label">
+					<label>Frontend</label>
+					<comment><![CDATA[This will be displayed to the customer on the Checkout page.]]></comment>
+					<field id="title" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="41" translate="label" type="text">
+						<label>Title</label>
+					</field>
+					<field id="instructions" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="52" translate="label" type="textarea">
+						<label>Instructions</label>
+					</field>
+				</group>	
 			</group>
 		</section>
 	</system>

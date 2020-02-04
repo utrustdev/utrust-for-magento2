@@ -1,9 +1,9 @@
 <?php
 namespace Utrust\Payment\Model;
 
-use \Magento\Checkout\Model\ConfigProviderInterface;
-use Magento\Payment\Helper\Data as PaymentHelper;
 use Magento\Framework\Escaper;
+use Magento\Payment\Helper\Data as PaymentHelper;
+use \Magento\Checkout\Model\ConfigProviderInterface;
 use \Magento\Framework\UrlInterface;
 
 class ConfigProvider implements ConfigProviderInterface
@@ -40,12 +40,12 @@ class ConfigProvider implements ConfigProviderInterface
         $config = [
             'payment' => [
                 'instructions' => [
-                    self::CODE => $this->method->getInstructions()
+                    self::CODE => $this->method->getInstructions(),
                 ],
                 self::CODE => [
-                    'redirectUrl' => $this->urlInterface->getUrl('utrust/payment/redirect')
-                ]
-            ]
+                    'redirectUrl' => $this->urlInterface->getUrl('utrust/payment/redirect'),
+                ],
+            ],
         ];
         return $config;
     }
