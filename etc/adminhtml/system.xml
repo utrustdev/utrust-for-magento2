@@ -27,7 +27,7 @@
 						Please signup on 
 							<a href="https://merchants.sandbox-utrust.com" target="_blank">Test</a> 
 							and/or 
-							<a href="https://merchants.utrust.com" target="_blank">Production</a>
+							<a href="https://merchants.utrust.com" target="_blank">Live</a>
 						environment.
 					]]></comment>
 					<field id="sandbox" translate="label" type="select" sortOrder="31" showInDefault="1" showInWebsite="1" showInStore="1">

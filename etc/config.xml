@@ -3,7 +3,7 @@
 	<default>
 		<payment>
 			<utrust>
-				<active>1</active>
+				<active>0</active>
 				<model>Utrust\Payment\Model\Payment\Utrust</model>
 				<order_status>pending</order_status>
 				<title>Utrust – Pay with crypto</title>
