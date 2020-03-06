@@ -10,6 +10,7 @@
 				<instructions>You will get redirected to the Utrust payment widget.</instructions>
 				<allowspecific>0</allowspecific>
 				<group>offline</group>
+				<currency>USD,EUR,GBP</currency>
 			</utrust>
 		</payment>
 	</default>
