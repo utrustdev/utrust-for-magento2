@@ -63,9 +63,11 @@
 					<comment><![CDATA[This will be displayed to the customer on the Checkout page.]]></comment>
 					<field id="title" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="41" translate="label" type="text">
 						<label>Title</label>
+						<config_path>payment/utrust/title</config_path>
 					</field>
 					<field id="instructions" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="52" translate="label" type="textarea">
 						<label>Instructions</label>
+						<config_path>payment/utrust/instructions</config_path>
 					</field>
 				</group>	
 			</group>

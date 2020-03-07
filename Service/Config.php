@@ -9,6 +9,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 class Config
 {
     const XML_PATH_CURRENCY = 'payment/utrust/currency';
+    const XML_PATH_INSTRUCTIONS = 'payment/utrust/instructions';
 
     /**
      * @var ScopeConfigInterface
@@ -41,5 +42,18 @@ class Config
         } else {
             return [];
         }
+    }
+
+    /**
+     * @param null $store
+     * @return string
+     */
+    public function getInstructions($store = null): string
+    {
+        return (string) $this->scopeConfig->getValue(
+            self::XML_PATH_INSTRUCTIONS,
+            ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+            $store
+        );
     }
 }
