@@ -1,9 +1,3 @@
-/**
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
- */
-
-/* @api */
 define([
     'jquery',
     'Magento_Checkout/js/view/payment/default'
@@ -15,12 +9,17 @@ define([
             template: 'Utrust_Payment/payment/utrust',
             redirectAfterPlaceOrder: false
         },
+
         getInstructions: function () {
-            return window.checkoutConfig.payment.instructions[this.item.method];
+            return window.checkoutConfig.payment.utrust.instructions;
         },
+
         afterPlaceOrder: function () {
             $.mage.redirect(window.checkoutConfig.payment.utrust.redirectUrl);
-        }
+        },
+
+        getLogoSrc: function () {
+            return window.checkoutConfig.payment.utrust.logoUrl;
+        },
     });
 });
-

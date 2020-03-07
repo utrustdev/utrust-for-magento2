@@ -1,52 +1,62 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Utrust\Payment\Model;
 
-use Magento\Framework\Escaper;
-use Magento\Payment\Helper\Data as PaymentHelper;
-use \Magento\Checkout\Model\ConfigProviderInterface;
-use \Magento\Framework\UrlInterface;
+use Magento\Checkout\Model\ConfigProviderInterface;
+use Magento\Framework\UrlInterface;
+use Magento\Payment\Model\CcConfig;
+use Utrust\Payment\Service\Config;
 
 class ConfigProvider implements ConfigProviderInterface
 {
     const CODE = 'utrust';
 
     /**
-     * @var \Magento\Payment\Model\Method\AbstractMethod
+     * @var Config
      */
-    protected $method;
+    private $config;
 
     /**
-     * @var \Magento\Framework\UrlInterface
+     * @var UrlInterface
      */
-    protected $urlInterface;
+    private $url;
 
+    /**
+     * @var CcConfig
+     */
+    private $ccConfig;
+
+    /**
+     * ConfigProvider constructor.
+     * @param UrlInterface $url
+     * @param CcConfig $ccConfig
+     * @param Config $config
+     */
     public function __construct(
-        PaymentHelper $paymentHelper,
-        Escaper $escaper,
-        UrlInterface $urlInterface
+        UrlInterface $url,
+        CcConfig $ccConfig,
+        Config $config
     ) {
-        $this->method = $paymentHelper->getMethodInstance(self::CODE);
-        $this->escaper = $escaper;
-        $this->urlInterface = $urlInterface;
+        $this->url = $url;
+        $this->ccConfig = $ccConfig;
+        $this->config = $config;
     }
 
     /**
-     * Retrieve assoc array of checkout configuration
-     *
      * @return array
      */
-    public function getConfig()
+    public function getConfig(): array
     {
-        $config = [
+        return [
             'payment' => [
-                'instructions' => [
-                    self::CODE => $this->method->getInstructions(),
-                ],
                 self::CODE => [
-                    'redirectUrl' => $this->urlInterface->getUrl('utrust/payment/redirect'),
+                    'redirectUrl' => $this->url->getUrl('utrust/payment/redirect'),
+                    'logoUrl' => $this->ccConfig->getViewFileUrl('Utrust_Payment::images/utrust-logo.png'),
+                    'instructions' => $this->config->getInstructions(),
                 ],
             ],
         ];
-        return $config;
     }
 }

@@ -15,9 +15,12 @@
       class="radio"
       data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"
     />
-    <label data-bind="attr: {'for': getCode()}" class="label"
-      ><span data-bind="text: getTitle()"></span
-    ></label>
+    <label data-bind="attr: {'for': getCode()}" class="label">
+      <if args="getLogoSrc()">
+        <img data-bind="attr: {src: getLogoSrc(), alt: getTitle()}" class="payment-icon"/>
+      </if>
+      <span data-bind="text: getTitle()"></span>
+    </label>
   </div>
   <div class="payment-method-content">
     <p data-bind="html: getInstructions()"></p>
