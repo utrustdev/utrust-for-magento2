@@ -10,6 +10,7 @@ class Config
 {
     const XML_PATH_CURRENCY = 'payment/utrust/currency';
     const XML_PATH_INSTRUCTIONS = 'payment/utrust/instructions';
+    const XML_PATH_RESTRICTED_COUNTRY_CODES = 'payment/utrust/restricted_country_codes';
 
     /**
      * @var ScopeConfigInterface
@@ -31,17 +32,13 @@ class Config
      */
     public function getAvailableCurrencies($store = null): array
     {
-        $result = $this->scopeConfig->getValue(
+        $result = (string) $this->scopeConfig->getValue(
             self::XML_PATH_CURRENCY,
             ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $store
         );
 
-        if (!empty($result)) {
-            return explode(',', $result);
-        } else {
-            return [];
-        }
+        return !empty($result) ? explode(',', $result) : [];
     }
 
     /**
@@ -55,5 +52,20 @@ class Config
             ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $store
         );
+    }
+
+    /**
+     * @param null $store
+     * @return array
+     */
+    public function getRestrictedCountryCodes($store = null): array
+    {
+        $codes = (string) $this->scopeConfig->getValue(
+            self::XML_PATH_RESTRICTED_COUNTRY_CODES,
+            ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+            $store
+        );
+
+        return !empty($codes) ? explode(',', $codes) : [];
     }
 }

@@ -51,11 +51,13 @@
 					<field id="allowspecific" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="42" translate="label" type="allowspecific">
 						<label>Payment from Applicable Countries</label>
 						<source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+						<config_path>payment/utrust/allowspecific</config_path>
 					</field>
 					<field id="specificcountry" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="43" translate="label" type="multiselect">
 						<label>Payment from Applicable Countries</label>
-						<source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+						<source_model>Utrust\Payment\Config\Source\Country</source_model>
 						<can_be_empty>1</can_be_empty>
+						<config_path>payment/utrust/specificcountry</config_path>
 					</field>
 				</group>
 				<group id="frontend" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="50" translate="label">
