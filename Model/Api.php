@@ -1,39 +1,98 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Utrust\Payment\Model;
+
+use Magento\Framework\HTTP\ClientInterface;
+use Magento\Framework\Serialize\SerializerInterface;
+use Utrust\Payment\Gateway\Config;
+use Utrust\Payment\Helper\Data;
 
 class Api
 {
-    const API_SANDBOX_URL = "https://merchants.api.sandbox-utrust.com/api";
-    const API_PRODUCTION_URL = "https://merchants.api.utrust.com/api";
+    /**
+     * @var Data
+     */
+    private $helper;
 
-    protected $helper;
-    protected $apiUrl;
-    protected $apiKey;
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
 
+    /**
+     * @var Config
+     */
+    private $config;
+
+    /**
+     * @var ClientInterface
+     */
+    private $client;
+
+    /**
+     * Api constructor.
+     * @param Data $helper
+     * @param SerializerInterface $serializer
+     * @param Config $config
+     * @param ClientInterface $client
+     */
     public function __construct(
-        \Utrust\Payment\Helper\Data $helper
+        Data $helper,
+        SerializerInterface $serializer,
+        Config $config,
+        ClientInterface $client
     ) {
         $this->helper = $helper;
-        $sandbox = $helper->getConfig('payment/utrust/credentials/sandbox');
-        $this->apiUrl = $sandbox ? self::API_SANDBOX_URL : self::API_PRODUCTION_URL;
-        $this->apiKey = $helper->getConfig('payment/utrust/credentials/api_key');
+        $this->serializer = $serializer;
+        $this->config = $config;
+        $this->client = $client;
     }
 
+    /**
+     * @param $order
+     * @return array|bool|float|int|string|null
+     */
     public function pay($order)
     {
         $orderData = $this->helper->getOrderData($order);
-        $data_string = json_encode($orderData);
-        $authorization = "Authorization: Bearer " . $this->apiKey;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->apiUrl . "/stores/orders");
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($data_string), $authorization]);
-        $response = curl_exec($ch);
-        curl_close($ch);
-        return json_decode($response, true);
+        $data = $this->serializer->serialize($orderData);
+
+        $response = $this->request($data);
+
+        return $this->serializer->unserialize($response);
+    }
+
+    /**
+     * @param string $data
+     * @return string
+     */
+    private function request($data)
+    {
+        $this->client->addHeader('Authorization', $this->getAuthorization());
+        $this->client->addHeader('Content-Type', 'application/json');
+        $this->client->addHeader('Content-Length', strlen($data));
+        $this->client->post($this->getOrdersUrl(), $data);
+
+        $response = $this->client->getBody();
+
+        return $response;
+    }
+
+    /**
+     * @return string
+     */
+    private function getAuthorization(): string
+    {
+        return 'Bearer ' . $this->config->getApiKey();
+    }
+
+    /**
+     * @return string
+     */
+    private function getOrdersUrl(): string
+    {
+        return $this->config->getApiUrl() . '/stores/orders';
     }
 }
