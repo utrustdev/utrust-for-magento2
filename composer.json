@@ -18,7 +18,7 @@
         "magento/module-payment": "100.3.*",
         "magento/module-checkout": "100.3.*",
         "magento/module-quote": "101.1.*",
-        "magento/module-directory": 100.3.*"
+        "magento/module-directory": "100.3.*"
     },
     "autoload": {
         "psr-4": {
