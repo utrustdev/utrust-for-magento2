@@ -2,8 +2,6 @@
 
 # Utrust for Magento 2.3
 
-**Demo Store:** https://magento2.store.utrust.com/
-
 Accept Bitcoin, Ethereum, Utrust Token and other cryptocurrencies directly on your store with the Utrust payment gateway for Magento.
 Utrust is cryptocurrency agnostic and provides fiat settlements.
 The Utrust plugin extends Magento allowing you to take cryptocurrency payments directly on your store via the Utrust API.
@@ -16,7 +14,11 @@ Find out more about Utrust at [utrust.com](https://utrust.com).
 
 ## Install and Update
 
-### Installing
+### Install automatically
+
+Go to the [Utrust Payment extension page](https://marketplace.magento.com/utrust-module-payment.html) on Magento's marketplace and follow the usual process of [adding an extension to your store](https://docs.magento.com/m2/ee/user_guide/magento/magento-marketplace.html).
+
+### Install manually
 
 You will need FTP and SSH access to install this module:
 
@@ -30,7 +32,7 @@ You will need FTP and SSH access to install this module:
 
 ** Note: In production please use the `--keep-generated` option **
 
-### Update
+### Update manually
 
 You can always check our [releases page](https://github.com/utrustdev/utrust-for-magento2/releases) for a new version. You can update by following the same instructions as installing.
 
