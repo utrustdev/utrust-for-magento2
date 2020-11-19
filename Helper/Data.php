@@ -95,13 +95,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     {
         $result = [];
         foreach ($array as $key => $value) {
-            if (is_object($value)) {
+            if (is_array($value)) {
                 foreach ($value as $k => $v) {
-                    $result[] = $key;
-                    $result[] = $k . $v;
+                    $result[$key . $k] = $v;
                 }
             } else {
-                $result[] = $key . $value;
+                $result[$key] = $value;
             }
         }
         return $result;

@@ -29,7 +29,7 @@ class Cancel extends \Magento\Framework\App\Action\Action
         $order = $this->checkoutSession->getLastRealOrder();
         if ($order) {
             $order->cancel()->setState(\Magento\Sales\Model\Order::STATE_CANCELED);
-            $order->addStatusToHistory($order->getStatus(), 'Gateway has canceled the payment.');
+            $order->addStatusToHistory($order->getStatus(), 'Utrust has canceled the payment (buyer clicked canceled button).');
             $order->save();
             $items = $order->getItemsCollection();
             foreach ($items as $item) {
