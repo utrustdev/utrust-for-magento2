@@ -60,24 +60,32 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
 
     public function execute()
     {
-        $resultado = "0";
+        $response = "";
+        $status = "200";
+
         try {
             $payload = json_decode($this->getRequest()->getContent(), true);
-            $signature = $this->helper->getPayloadSignature($payload);
-            if (isset($payload["signature"]) && $payload["signature"] === $signature) {
-                if (isset($payload["event_type"]) && $payload["event_type"] === 'ORDER.PAYMENT.RECEIVED') {
-                    /** @var \Magento\Sales\Model\Order $order */
-                    $order = $this->orderFactory->create()->loadByIncrementId($payload["resource"]["reference"]);
+
+            // Calculate signature using the payload
+            $signatureCalculated = $this->helper->getPayloadSignature($payload);
+
+            // If signature from payload matches signature calculated
+            if (isset($payload["signature"]) && $payload["signature"] === $signatureCalculated) {
+                /** @var \Magento\Sales\Model\Order $order */
+                $order = $this->orderFactory->create()->loadByIncrementId($payload["resource"]["reference"]);
+
+                // ORDER PAID -> PROCESSING
+                if (isset($payload["event_type"]) && $payload["event_type"] === "ORDER.PAYMENT.RECEIVED") {
                     $payment = $order->getPayment();
-                    if ($payment->getMethod() === 'utrust') {
+                    if ($payment->getMethod() === "utrust") {
                         if ($order->canInvoice()) {
                             $invoice = $this->invoiceService->prepareInvoice($order);
                             $invoice->register();
                             $invoice->save();
                             $transactionSave = $this->transaction->addObject($invoice)->addObject($invoice->getOrder());
                             $transactionSave->save();
-                            $msg = __('Utrust Callback: ') . $payload["event_type"]
-                                . "<br/>" . __("Amount: ") . $payload["resource"]["currency"] . " "
+                            $msg = __("Utrust Callback: ") . $payload["event_type"]
+                            . "<br/>" . __("Amount: ") . $payload["resource"]["currency"] . " "
                                 . $payload["resource"]["amount"] . "<br/>";
                             $msg .= __("Invoice %1 created.", $invoice->getIncrementId());
                             $order->setState(\Magento\Sales\Model\Order::STATE_PROCESSING)
@@ -87,12 +95,30 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
                         }
                     }
                 }
-                $resultado = "1";
+                // ORDER CANCELLED -> CANCELLED
+                elseif (isset($payload["event_type"]) && $payload["event_type"] === "ORDER.PAYMENT.CANCELLED") {
+                    // If order is NOT CANCELED continues
+                    if ($order->getState() !== \Magento\Sales\Model\Order::STATE_CANCELED) {
+                        $order->cancel()->setState(\Magento\Sales\Model\Order::STATE_CANCELED);
+                        $order->addStatusToHistory($order->getStatus(), "Utrust has canceled the payment (expired).");
+                        $order->save();
+                    }
+                }
+                // OTHER EVENT SHOULD BE DISCARDED
+                else {
+                    $response = "Event Error: event type is not ORDER.PAYMENT.RECEIVED or ORDER.PAYMENT.CANCELLED.\nEvent type: " . $payload["event_type"] . "\n";
+                    $status = "500";
+                }
+            } else {
+                $response = "Authentication error: signatures don't match.\nSignature from payload: " . $payload["signature"] . "\nSignature calculated: " . $signatureCalculated . "\n";
+                $status = "500";
             }
         } catch (\Exception $e) {
             $this->logger->info($e->getMessage());
+
+            $response = $e->getMessage();
         }
-        $this->getResponse()->setBody($resultado);
+        $this->getResponse()->setStatusCode($status)->setBody($response);
     }
 
     /**
