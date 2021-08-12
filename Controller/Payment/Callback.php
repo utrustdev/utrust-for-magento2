@@ -4,6 +4,9 @@ namespace Utrust\Payment\Controller\Payment;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
+use Magento\Quote\Model\QuoteFactory;
+use Magento\Checkout\Model\Session;
+
 
 class Callback extends \Magento\Framework\App\Action\Action implements CsrfAwareActionInterface
 {
@@ -11,6 +14,10 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
      * @var Utrust\Payment\Helper\Data
      */
     protected $helper;
+    protected $checkoutSession;
+
+
+    protected $quoteFactory;
 
     /**
      * @var Utrust\Payment\Logger\Logger
@@ -48,7 +55,9 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
         \Utrust\Payment\Logger\Logger $logger,
         \Magento\Sales\Api\Data\OrderInterfaceFactory $orderFactory,
         \Magento\Sales\Model\Service\InvoiceService $invoiceService,
-        \Magento\Framework\DB\Transaction $transaction
+        \Magento\Framework\DB\Transaction $transaction,
+        \Magento\Checkout\Model\Session $checkoutSession,
+        QuoteFactory $quoteFactory
     ) {
         parent::__construct($context);
         $this->helper = $helper;
@@ -56,6 +65,8 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
         $this->orderFactory = $orderFactory;
         $this->invoiceService = $invoiceService;
         $this->transaction = $transaction;
+        $this->quoteFactory = $quoteFactory;
+        $this->checkoutSession = $checkoutSession;
     }
 
     public function execute()
@@ -65,33 +76,58 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
 
         try {
             $payload = json_decode($this->getRequest()->getContent(), true);
-
             // Calculate signature using the payload
             $signatureCalculated = $this->helper->getPayloadSignature($payload);
 
             // If signature from payload matches signature calculated
             if (isset($payload["signature"]) && $payload["signature"] === $signatureCalculated) {
                 /** @var \Magento\Sales\Model\Order $order */
+                $flow=$this->helper->getConfig('payment/utrust/checkout_flow/flow');
+                
                 $order = $this->orderFactory->create()->loadByIncrementId($payload["resource"]["reference"]);
-
+                
                 // ORDER PAID -> PROCESSING
                 if (isset($payload["event_type"]) && $payload["event_type"] === "ORDER.PAYMENT.RECEIVED") {
-                    $payment = $order->getPayment();
-                    if ($payment->getMethod() === "utrust") {
-                        if ($order->canInvoice()) {
-                            $invoice = $this->invoiceService->prepareInvoice($order);
-                            $invoice->register();
-                            $invoice->save();
-                            $transactionSave = $this->transaction->addObject($invoice)->addObject($invoice->getOrder());
-                            $transactionSave->save();
-                            $msg = __("Utrust Callback: ") . $payload["event_type"]
-                            . "<br/>" . __("Amount: ") . $payload["resource"]["currency"] . " "
-                                . $payload["resource"]["amount"] . "<br/>";
-                            $msg .= __("Invoice %1 created.", $invoice->getIncrementId());
-                            $order->setState(\Magento\Sales\Model\Order::STATE_PROCESSING)
-                                ->setStatus(\Magento\Sales\Model\Order::STATE_PROCESSING);
-                            $order->addStatusToHistory($order->getStatus(), $msg);
-                            $order->save();
+                    if($flow){
+                        $quote=$this->quoteFactory->create()->load($payload["resource"]["reference"]);
+                            if($quote->getData('customer_id')==null){
+                                $quote->setCustomerId(null)
+                                ->setCustomerEmail($quote->getBillingAddress()->getEmail()) 
+                                ->setCustomerIsGuest(true)
+                                ->setCustomerGroupId(\Magento\Customer\Api\Data\GroupInterface::NOT_LOGGED_IN_ID);
+                            }
+                            $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
+                            $logger = new \Zend\Log\Logger();
+                            $logger->addWriter($writer);
+                            $logger->info(json_encode($quote->getData()));//here you will get address data
+
+                        $result=$this->helper->createOrder($quote);
+                        $this->checkoutSession->setLastQuoteId($quote->getId());
+                        $this->checkoutSession->setLastSuccessQuoteId($quote->getId());
+                        $this->checkoutSession->setLastOrderId($result['orderid']);
+                        $this->checkoutSession->setLastRealOrderId($result['success']);
+                        $this->checkoutSession->setLastOrderStatus($result['status']);
+                        $quoteOrder=$this->quoteFactory->create()->load($quote->getId());
+                        $order = $this->orderFactory->create()->loadByIncrementId($quoteOrder->getReservedOrderId());
+                    }
+                    if($order){
+                        $payment = $order->getPayment();
+                        if ($payment->getMethod() === "utrust") {
+                            if ($order->canInvoice()) {
+                                $invoice = $this->invoiceService->prepareInvoice($order);
+                                $invoice->register();
+                                $invoice->save();
+                                $transactionSave = $this->transaction->addObject($invoice)->addObject($invoice->getOrder());
+                                $transactionSave->save();
+                                $msg = __("Utrust Callback: ") . $payload["event_type"]
+                                . "<br/>" . __("Amount: ") . $payload["resource"]["currency"] . " "
+                                    . $payload["resource"]["amount"] . "<br/>";
+                                $msg .= __("Invoice %1 created.", $invoice->getIncrementId());
+                                $order->setState(\Magento\Sales\Model\Order::STATE_PROCESSING)
+                                    ->setStatus(\Magento\Sales\Model\Order::STATE_PROCESSING);
+                                $order->addStatusToHistory($order->getStatus(), $msg);
+                                $order->save();
+                            }
                         }
                     }
                 }
