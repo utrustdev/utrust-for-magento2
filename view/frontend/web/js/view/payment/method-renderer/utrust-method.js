@@ -16,10 +16,19 @@ define([
 
         afterPlaceOrder: function () {
             $.mage.redirect(window.checkoutConfig.payment.utrust.redirectUrl);
+            return false;
+        }, 
+        
+        redirectUtrust: function () {
+            if(window.checkoutConfig.payment.utrust.flow == 1){
+                $.mage.redirect(window.checkoutConfig.payment.utrust.redirectUrl);
+            }else{
+                this.placeOrder();
+            }
         },
 
         getLogoSrc: function () {
             return window.checkoutConfig.payment.utrust.logoUrl;
-        },
+        }, 
     });
 });

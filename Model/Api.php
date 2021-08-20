@@ -55,8 +55,13 @@ class Api
      * @return array|bool|float|int|string|null
      */
     public function pay($order)
-    {
-        $orderData = $this->helper->getOrderData($order);
+    {   
+        $flow=$this->helper->getConfig('payment/utrust/checkout_flow/flow');    
+        if($flow){  
+            $orderData = $this->helper->getQuoteData($order);   
+        }else{  
+            $orderData = $this->helper->getOrderData($order);   
+        }
         $data = $this->serializer->serialize($orderData);
 
         $response = $this->request($data);

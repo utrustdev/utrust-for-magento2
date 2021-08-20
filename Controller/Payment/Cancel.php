@@ -5,6 +5,7 @@ class Cancel extends \Magento\Framework\App\Action\Action
 {
     protected $checkoutSession;
     protected $cart;
+    protected $helper;
 
     /**
      * Constructor
@@ -14,10 +15,12 @@ class Cancel extends \Magento\Framework\App\Action\Action
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Checkout\Model\Session $checkoutSession,
+        \Utrust\Payment\Helper\Data $helper,
         \Magento\Checkout\Model\Cart $cart
     ) {
         $this->checkoutSession = $checkoutSession;
         $this->cart = $cart;
+        $this->helper = $helper;
         parent::__construct($context);
     }
 
@@ -26,21 +29,26 @@ class Cancel extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        $order = $this->checkoutSession->getLastRealOrder();
-        if ($order) {
+        $flow=$this->helper->getConfig('payment/utrust/checkout_flow/flow');
+        if($flow){
+            $this->_redirect('checkout/cart');
+        }else{
+            $order = $this->checkoutSession->getLastRealOrder();
+            if ($order) {
             $order->cancel()->setState(\Magento\Sales\Model\Order::STATE_CANCELED);
             $order->addStatusToHistory($order->getStatus(), 'Utrust has canceled the payment (buyer clicked canceled button).');
             $order->save();
             $items = $order->getItemsCollection();
-            foreach ($items as $item) {
-                try {
-                    $this->cart->addOrderItem($item);
-                } catch (\Exception $e) {
-                    continue;
+                foreach ($items as $item) {
+                    try {
+                        $this->cart->addOrderItem($item);
+                    } catch (\Exception $e) {
+                        continue;
+                    }
                 }
+                $this->cart->save();
             }
-            $this->cart->save();
-        }
-        $this->_redirect('checkout/cart');
+            $this->_redirect('checkout/cart');
+        }    
     }
 }

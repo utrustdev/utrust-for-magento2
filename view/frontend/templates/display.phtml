@@ -1,0 +1,15 @@
+<div>
+	<div>
+		<p>Your Payment IS Detected With Us , We Will Update AS Your Payment Is Confirmed By Utrust</p>
+	    <p><?=$block->escapeHtml(__('Order UUID'))?>: <?=$block->escapeHtml($block->getUtrustPaymentIdValue())?></p>
+	</div>
+	<script>
+require([
+   'Magento_Customer/js/customer-data'
+], function (customerData) {
+    var sections = ['cart'];
+    customerData.invalidate(sections);
+    customerData.reload(sections, true);
+});
+ </script>
+</div>
