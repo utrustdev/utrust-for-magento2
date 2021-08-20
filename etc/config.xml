@@ -7,11 +7,11 @@
 				<model>Utrust\Payment\Model\Payment\Utrust</model>
 				<order_status>pending</order_status>
 				<title>Utrust – Pay with crypto</title>
-				<instructions>You will get redirected to the Utrust payment widget.</instructions>
+				<instructions>You will be redirected to the Utrust payment widget compatible with any major crypto wallets. It will allow you to pay for your purchase in a safe and seamless way using Bitcoin, Ethereum, Tether or a number of other currencies.</instructions>
 				<allowspecific>0</allowspecific>
 				<group>offline</group>
-				<currency>USD,EUR,GBP</currency>
-				<restricted_country_codes>AX,AQ,AW,BS,BW,BV,IO,VG,CF,CX,CC,CK,CU,CW,KP,ET,FK,GF,PF,TF,GH,GL,GP,GU,HM,IR,XK,LY,MQ,YT,NC,NU,NF,MP,PK,PN,RE,BL,PM,RS,SO,LK,SD,SJ,SY,TK,TT,TN,UM,VI,VE,WF,EH,YE,CI</restricted_country_codes>
+				<currency>USD,EUR,GBP,ARS,AUD,BRL,CAD,CLP,CNY,CZK,DKK,DOP,HKD,HUF,INR,IDR,ILS,JPY,KRW,MYR,MXN,NZD,NOK,PKR,PHP,PLN,RON,RUB,SGD,ZAR,SEK,CHF,TWD,THB,AED</currency>
+				<restricted_country_codes>AF,AQ,BS,BB,BW,BV,KH,CF,CD,CU,GH,IR,IQ,JM,KP,XK,LY,MR,MU,MN,MM,NI,PK,PA,SO,SS,SD,SY,TT,UG,VU,VE,YE,ZW</restricted_country_codes>
 			</utrust>
 		</payment>
 	</default>
