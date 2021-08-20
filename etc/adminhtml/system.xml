@@ -24,8 +24,8 @@
 				<group id="checkout_flow" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="30" translate="label">
 					<label>Checkout Flow</label>
 					<field id="flow" translate="label" type="select" sortOrder="31" showInDefault="1" showInWebsite="1" showInStore="1">
-						<label>Pre-Order</label>
-	                    <comment><![CDATA[Select <b>Yes</b> Pre-Order Checkout Processing, <b>No</b> For Default Checkout Flow.]]></comment>
+						<label>Alternative</label>
+						<comment><![CDATA[Select <b>Yes</b> to Create Order on Magento when Payment is confirmed, <b>No</b> to Create Order on Magento when buyer is redirected to Utrust widget.]]></comment>
 						<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
 					</field>
 				</group>
