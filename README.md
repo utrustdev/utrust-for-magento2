@@ -1,6 +1,6 @@
 ![Utrust integrations](https://user-images.githubusercontent.com/1558992/67495646-1e356b00-f673-11e9-8854-1beac877c586.png)
 
-# Utrust for Magento 2.3
+# Utrust for Magento 2.4
 
 Accept Bitcoin, Ethereum, Utrust Token and other cryptocurrencies directly on your store with the Utrust payment gateway for Magento.
 Utrust is cryptocurrency agnostic and provides fiat settlements.
@@ -10,19 +10,15 @@ Find out more about Utrust at [utrust.com](https://utrust.com).
 ## Requirements
 
 - Utrust Merchant account
-- Online store in Magento 2.3.x
+- Online store in Magento 2.4.x or 2.3.x
 
 ## Install and Update
 
-### Install automatically
-
-Go to the [Utrust Payment extension page](https://marketplace.magento.com/utrust-module-payment.html) on Magento's marketplace and follow the usual process of [adding an extension to your store](https://docs.magento.com/m2/ee/user_guide/magento/magento-marketplace.html).
-
-### Install manually
+### Install
 
 You will need FTP and SSH access to install this module:
 
-1. Download our latest release zip file on the [releases page](https://github.com/utrustdev/utrust-for-magento2/releases).
+1. Download our latest release zip file on the [releases page](https://github.com/utrustdev/utrust-for-magento2/releases) or [Utrust Payment extension page](https://marketplace.magento.com/utrust-module-payment.html).
 2. Unzip the zip file in `app/code/Utrust/Payment`.
 3. Enable the module by running `bin/magento module:enable Utrust_Payment`
 4. Apply database updates by running `bin/magento setup:upgrade`
@@ -32,7 +28,7 @@ You will need FTP and SSH access to install this module:
 
 ** Note: In production please use the `--keep-generated` option **
 
-### Update manually
+### Update
 
 You can always check our [releases page](https://github.com/utrustdev/utrust-for-magento2/releases) for a new version. You can update by following the same instructions as installing.
 
@@ -108,7 +104,7 @@ If something goes wrong with the module, logs can be found in `var/log/utrust.lo
 
 ## Publishing
 
-For now only members of the Utrust development team can publish new versions of the Utrust for Magento 1 plugin.
+For now only members of the Utrust development team can publish new versions of the Utrust for Magento 2 plugin.
 
 To publish a new version, simply follow [these instructions](https://github.com/utrustdev/utrust-for-magento2/wiki/Publishing).
 
@@ -116,4 +112,4 @@ To publish a new version, simply follow [these instructions](https://github.com/
 
 The Utrust for Magento 2 plugin is maintained with :purple_heart: by the Utrust development team, and is available to the public under the GNU GPLv3 license. Please see [LICENSE](https://github.com/utrustdev/utrust-for-magento2/blob/master/LICENSE) for further details.
 
-&copy; Utrust 2019
+&copy; Utrust 2021
