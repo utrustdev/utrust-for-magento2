@@ -81,6 +81,11 @@
 						<label>Instructions</label>
 						<config_path>payment/utrust/instructions</config_path>
 					</field>
+					<field id="sort_order" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="0">
+			            <label>Sort Order</label>
+		                <frontend_class>validate-number</frontend_class>
+		                <config_path>payment/utrust/sort_order</config_path>
+			        </field>
 				</group>	
 			</group>
 		</section>
