@@ -156,13 +156,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
 
     public function createOrder($orderInfo) {
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
-                            $logger = new \Zend\Log\Logger();
-                            $logger->addWriter($writer);
-                            $logger->info(json_encode($orderInfo->getData()));
         // Create Order From Quote Object
             $order = $this->quoteManagement->submit($orderInfo);
-            $logger->info(json_encode($order->getData()));
             $order->getPayment()->setUtrustPaymentId($orderInfo->getPayment()->getUtrustPaymentId());
             $order->getPayment()->save();
         /* for send order email to customer email id */

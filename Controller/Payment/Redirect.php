@@ -68,10 +68,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
                     $payment = $order->getPayment();
                     $payment->setUtrustPaymentId($result["data"]["id"]);
                     $payment->save();
-                    $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
-                    $logger = new \Zend\Log\Logger();
-                    $logger->addWriter($writer);
-                    $logger->info(json_encode($payment->getData())); //here you will get address data
+                    
                     $this->cookieManager->setPublicCookie(
                         'utrust_payment_id',
                         $result["data"]["id"],

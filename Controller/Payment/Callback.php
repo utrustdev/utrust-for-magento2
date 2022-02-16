@@ -96,10 +96,7 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
                                 ->setCustomerIsGuest(true)
                                 ->setCustomerGroupId(\Magento\Customer\Api\Data\GroupInterface::NOT_LOGGED_IN_ID);
                             }
-                            $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
-                            $logger = new \Zend\Log\Logger();
-                            $logger->addWriter($writer);
-                            $logger->info(json_encode($quote->getData()));//here you will get address data
+                    
 
                         $result=$this->helper->createOrder($quote);
                         $this->checkoutSession->setLastQuoteId($quote->getId());
