@@ -97,7 +97,6 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
                                 ->setCustomerGroupId(\Magento\Customer\Api\Data\GroupInterface::NOT_LOGGED_IN_ID);
                             }
                     
-
                         $result=$this->helper->createOrder($quote);
                         $this->checkoutSession->setLastQuoteId($quote->getId());
                         $this->checkoutSession->setLastSuccessQuoteId($quote->getId());
