@@ -1,12 +1,11 @@
 <?php
 namespace Utrust\Payment\Controller\Payment;
 
+use Magento\Checkout\Model\Session;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Quote\Model\QuoteFactory;
-use Magento\Checkout\Model\Session;
-
 
 class Callback extends \Magento\Framework\App\Action\Action implements CsrfAwareActionInterface
 {
@@ -15,7 +14,6 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
      */
     protected $helper;
     protected $checkoutSession;
-
 
     protected $quoteFactory;
 
@@ -60,19 +58,19 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
         QuoteFactory $quoteFactory
     ) {
         parent::__construct($context);
-        $this->helper = $helper;
-        $this->logger = $logger;
-        $this->orderFactory = $orderFactory;
-        $this->invoiceService = $invoiceService;
-        $this->transaction = $transaction;
-        $this->quoteFactory = $quoteFactory;
+        $this->helper          = $helper;
+        $this->logger          = $logger;
+        $this->orderFactory    = $orderFactory;
+        $this->invoiceService  = $invoiceService;
+        $this->transaction     = $transaction;
+        $this->quoteFactory    = $quoteFactory;
         $this->checkoutSession = $checkoutSession;
     }
 
     public function execute()
     {
         $response = "";
-        $status = "200";
+        $status   = "200";
 
         try {
             $payload = json_decode($this->getRequest()->getContent(), true);
@@ -82,31 +80,33 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
             // If signature from payload matches signature calculated
             if (isset($payload["signature"]) && $payload["signature"] === $signatureCalculated) {
                 /** @var \Magento\Sales\Model\Order $order */
-                $flow=$this->helper->getConfig('payment/utrust/checkout_flow/flow');
-                
+                $flow = $this->helper->getConfig('payment/utrust/checkout_flow/flow');
+
                 $order = $this->orderFactory->create()->loadByIncrementId($payload["resource"]["reference"]);
-                
-                // ORDER PAID -> PROCESSING
-                if (isset($payload["event_type"]) && $payload["event_type"] === "ORDER.PAYMENT.RECEIVED") {
-                    if($flow){
-                        $quote=$this->quoteFactory->create()->load($payload["resource"]["reference"]);
-                            if($quote->getData('customer_id')==null){
-                                $quote->setCustomerId(null)
-                                ->setCustomerEmail($quote->getBillingAddress()->getEmail()) 
+
+                if (isset($payload["event_type"]) && $payload["event_type"] === "ORDER.PAYMENT.DETECTED") {
+                    if ($flow) {
+                        $quote = $this->quoteFactory->create()->load($payload["resource"]["reference"]);
+                        if ($quote->getData('customer_id') == null) {
+                            $quote->setCustomerId(null)
+                                ->setCustomerEmail($quote->getBillingAddress()->getEmail())
                                 ->setCustomerIsGuest(true)
                                 ->setCustomerGroupId(\Magento\Customer\Api\Data\GroupInterface::NOT_LOGGED_IN_ID);
-                            }
-                    
-                        $result=$this->helper->createOrder($quote);
-                        $this->checkoutSession->setLastQuoteId($quote->getId());
-                        $this->checkoutSession->setLastSuccessQuoteId($quote->getId());
-                        $this->checkoutSession->setLastOrderId($result['orderid']);
-                        $this->checkoutSession->setLastRealOrderId($result['success']);
-                        $this->checkoutSession->setLastOrderStatus($result['status']);
-                        $quoteOrder=$this->quoteFactory->create()->load($quote->getId());
-                        $order = $this->orderFactory->create()->loadByIncrementId($quoteOrder->getReservedOrderId());
+                        }
+                        $result = $this->helper->createOrder($quote);
+                        if ($result['success']) {
+                            $order = $this->orderFactory->create()->loadByIncrementId($result['success']);
+                        }
                     }
-                    if($order){
+                }
+                // ORDER PAID -> PROCESSING
+                elseif (isset($payload["event_type"]) && $payload["event_type"] === "ORDER.PAYMENT.RECEIVED") {
+                    if ($flow) {
+                        $quote      = $this->quoteFactory->create()->load($payload["resource"]["reference"]);
+                        $quoteOrder = $this->quoteFactory->create()->load($quote->getId());
+                        $order      = $this->orderFactory->create()->loadByIncrementId($quoteOrder->getReservedOrderId());
+                    }
+                    if ($order) {
                         $payment = $order->getPayment();
                         if ($payment->getMethod() === "utrust") {
                             if ($order->canInvoice()) {
@@ -139,11 +139,11 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
                 // OTHER EVENT SHOULD BE DISCARDED
                 else {
                     $response = "Event Error: event type is not ORDER.PAYMENT.RECEIVED or ORDER.PAYMENT.CANCELLED.\nEvent type: " . $payload["event_type"] . "\n";
-                    $status = "500";
+                    $status   = "500";
                 }
             } else {
                 $response = "Authentication error: signatures don't match.\nSignature from payload: " . $payload["signature"] . "\nSignature calculated: " . $signatureCalculated . "\n";
-                $status = "500";
+                $status   = "500";
             }
         } catch (\Exception $e) {
             $this->logger->info($e->getMessage());
@@ -161,7 +161,7 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
      *
      * @return InvalidRequestException|null
      */
-    public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
+    public function createCsrfValidationException(RequestInterface $request):  ? InvalidRequestException
     {
         return null;
     }
@@ -174,7 +174,7 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
      *
      * @return bool|null
      */
-    public function validateForCsrf(RequestInterface $request): ?bool
+    public function validateForCsrf(RequestInterface $request) :  ? bool
     {
         return true;
     }

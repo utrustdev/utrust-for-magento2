@@ -24,10 +24,12 @@ class Response extends \Magento\Framework\App\Action\Action
         \Magento\Framework\App\Action\Context $context,
         \Utrust\Payment\Helper\Data $helper,
         \Magento\Checkout\Model\Session $checkoutSession,
+        \Magento\Sales\Api\Data\OrderInterfaceFactory $orderFactory,
         \Magento\Framework\Stdlib\CookieManagerInterface $cookieManager,
         \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory $cookieMetadataFactory,
         \Magento\Sales\Model\ResourceModel\Order\Payment\Collection $collection,
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
+        QuoteFactory $quoteFactory,
         \Magento\Quote\Api\GuestCartManagementInterface $guestCart
     ) {
         $this->checkoutSession       = $checkoutSession;
@@ -37,42 +39,26 @@ class Response extends \Magento\Framework\App\Action\Action
         $this->collection            = $collection;
         $this->orderRepository       = $orderRepository;
         $this->guestCart             = $guestCart;
+        $this->orderFactory          = $orderFactory;
+        $this->quoteFactory          = $quoteFactory;
         parent::__construct($context);
     }
 
     public function execute()
     {
+        sleep(50);
         $flow = $this->helper->getConfig('payment/utrust/checkout_flow/flow');
         if ($flow) {
-            $this->collection->addFieldToFilter('utrust_payment_id', $this->cookieManager->getCookie('utrust_payment_id'));
-
-            foreach ($this->collection as $value) {
-                $orderId = $value->getId();
-            }
-            if (empty($orderId)) {
-                sleep(60);
-                $this->collection->addFieldToFilter('utrust_payment_id', $this->cookieManager->getCookie('utrust_payment_id'));
-
-                foreach ($this->collection as $value) {
-                    $orderId = $value->getId();
-                }
-                if (empty($orderId)) {
-                    sleep(60);
-                    $this->collection->addFieldToFilter('utrust_payment_id', $this->cookieManager->getCookie('utrust_payment_id'));
-
-                    foreach ($this->collection as $value) {
-                        $orderId = $value->getId();
-                    }
-                }
-            }
-            $order = $this->orderRepository->get($orderId);
-            $this->checkoutSession->setLastSuccessQuoteId($order->getQouteId());
+            $quoteId    = $this->cookieManager->getCookie('quote_id');
+            $quote      = $this->quoteFactory->create()->load($quoteId);
+            $quoteOrder = $this->quoteFactory->create()->load($quote->getId());
+            $order      = $this->orderFactory->create()->loadByIncrementId($quoteOrder->getReservedOrderId());
+            $this->checkoutSession->setLastSuccessQuoteId($order->getQuoteId());
             $this->checkoutSession->setLastQuoteId($order->getQuoteId());
             $this->checkoutSession->setLastOrderId($order->getEntityId());
             $this->checkoutSession->setLastRealOrderId($order->getIncrementId());
             $this->checkoutSession->setLastOrderStatus('pending');
             $this->guestCart->createEmptyCart();
-
             $this->_redirect('checkout/onepage/success');
         } else {
             $order = $this->checkoutSession->getLastRealOrder();
