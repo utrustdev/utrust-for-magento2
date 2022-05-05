@@ -1,11 +1,11 @@
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
     <table name="sales_order_payment" resource="default" engine="innodb">
-        <column xsi:type="text" name="utrust_payment_id"  nullable="true"
+        <column xsi:type="text" name="utrust_payment_id"  length="255" nullable="true"
                  comment="Utrust Payment ID"/>
     </table>
     <table name="quote_payment" resource="default" engine="innodb">
-        <column xsi:type="text" name="utrust_payment_id"  nullable="true"
+        <column xsi:type="text" name="utrust_payment_id"  length="255" nullable="true"
                  comment="Utrust Payment ID"/>
         <index referenceId="QUOTE_PAYMENT_UTRUST_PAYMENT_ID" indexType="btree">
             <column name="utrust_payment_id"/>
