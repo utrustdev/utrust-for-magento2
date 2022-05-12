@@ -45,7 +45,6 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-
         if ($this->cookieManager->getCookie('utrust_payment_id')) {
             $metadata = $this->cookieMetadataFactory->createPublicCookieMetadata();
             $metadata->setPath('/');
@@ -53,7 +52,13 @@ class Redirect extends \Magento\Framework\App\Action\Action
             $this->cookieManager->deleteCookie(
                 'utrust_payment_id', $metadata);
         }
+        if ($this->cookieManager->getCookie('quote_id')) {
+            $metadata = $this->cookieMetadataFactory->createPublicCookieMetadata();
+            $metadata->setPath('/');
 
+            $this->cookieManager->deleteCookie(
+                'quote_id', $metadata);
+        }
         $publicCookieMetadata = $this->cookieMetadataFactory->createPublicCookieMetadata();
         $publicCookieMetadata->setDurationOneYear();
         $publicCookieMetadata->setPath('/');
@@ -72,6 +77,11 @@ class Redirect extends \Magento\Framework\App\Action\Action
                     $this->cookieManager->setPublicCookie(
                         'utrust_payment_id',
                         $result["data"]["id"],
+                        $publicCookieMetadata
+                    );
+                    $this->cookieManager->setPublicCookie(
+                        'quote_id',
+                        $order->getId(),
                         $publicCookieMetadata
                     );
                     $resultRedirect = $this->resultRedirectFactory->create();

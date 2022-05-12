@@ -1,0 +1,15 @@
+{
+    "sales_order_payment": {
+        "column": {
+            "utrust_payment_id": true
+        }
+    },
+    "quote_payment": {
+        "column": {
+            "utrust_payment_id": true
+        },
+        "index": {
+            "QUOTE_PAYMENT_UTRUST_PAYMENT_ID": true
+        }
+    }
+}
