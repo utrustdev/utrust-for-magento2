@@ -54,8 +54,9 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
         \Magento\Sales\Api\Data\OrderInterfaceFactory $orderFactory,
         \Magento\Sales\Model\Service\InvoiceService $invoiceService,
         \Magento\Framework\DB\Transaction $transaction,
-        \Magento\Checkout\Model\Session $checkoutSession,
-        QuoteFactory $quoteFactory
+        QuoteFactory $quoteFactory,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Customer\Model\CustomerFactory $customerFactory
     ) {
         parent::__construct($context);
         $this->helper          = $helper;
@@ -64,7 +65,8 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
         $this->invoiceService  = $invoiceService;
         $this->transaction     = $transaction;
         $this->quoteFactory    = $quoteFactory;
-        $this->checkoutSession = $checkoutSession;
+        $this->_storeManager = $storeManager;
+        $this->customerFactory = $customerFactory;
     }
 
     public function execute()
@@ -87,12 +89,29 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
                 if (isset($payload["event_type"]) && $payload["event_type"] === "ORDER.PAYMENT.DETECTED") {
                     if ($flow) {
                         $quote = $this->quoteFactory->create()->load($payload["resource"]["reference"]);
-                        if ($quote->getData('customer_id') == null) {
-                            $quote->setCustomerId(null)
-                                ->setCustomerEmail($quote->getBillingAddress()->getEmail())
-                                ->setCustomerIsGuest(true)
-                                ->setCustomerGroupId(\Magento\Customer\Api\Data\GroupInterface::NOT_LOGGED_IN_ID);
+                        if (is_null($quote->getCustomerId())) {
+                            $customerEmail = $quote->getBillingAddress()->getEmail();
+                            $store=$this->_storeManager->getStore();
+                            $websiteId = $this->_storeManager->getStore()->getWebsiteId();
+                            $customer=$this->customerFactory->create();
+                            $customer->setWebsiteId($websiteId);
+                            $customer->loadByEmail($customerEmail);
+                            if ($customer->getEntityId()) {
+                                $quote->setCustomerId($customer->getEntityId());
+                                $quote->setCustomerFirstname($customer->getFirstname());
+                                $quote->setCustomerLastname($customer->getLastname());
+                                $quote->setCustomerEmail($customerEmail);
+                                $quote->setCustomerIsGuest(false);
+                            }else{
+                                $quote->setCustomerFirstname($quote->getBillingAddress()->getFirstname());
+                                $quote->setCustomerLastname($quote->getBillingAddress()->getLastname());
+                                $quote->setCustomerEmail($customerEmail);
+                                $quote->setCustomerIsGuest(true);
+                            }
                         }
+                        // Save Quote
+                        $quote->save();
+                        $quote->collectTotals()->save();
                         $result = $this->helper->createOrder($quote);
                         if ($result['success']) {
                             $order = $this->orderFactory->create()->loadByIncrementId($result['success']);
@@ -103,8 +122,35 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
                 elseif (isset($payload["event_type"]) && $payload["event_type"] === "ORDER.PAYMENT.RECEIVED") {
                     if ($flow) {
                         $quote      = $this->quoteFactory->create()->load($payload["resource"]["reference"]);
-                        $quoteOrder = $this->quoteFactory->create()->load($quote->getId());
-                        $order      = $this->orderFactory->create()->loadByIncrementId($quoteOrder->getReservedOrderId());
+                        if($quote->getIsActive()){
+                            if (is_null($quote->getCustomerId())) {
+                                $customerEmail = $quote->getBillingAddress()->getEmail();
+                                $store=$this->_storeManager->getStore();
+                                $websiteId = $this->_storeManager->getStore()->getWebsiteId();
+                                $customer=$this->customerFactory->create();
+                                $customer->setWebsiteId($websiteId);
+                                $customer->loadByEmail($customerEmail);
+                                if ($customer->getEntityId()) {
+                                    $quote->setCustomerId($customer->getEntityId());
+                                    $quote->setCustomerFirstname($customer->getFirstname());
+                                    $quote->setCustomerLastname($customer->getLastname());
+                                    $quote->setCustomerEmail($customerEmail);
+                                    $quote->setCustomerIsGuest(false);
+                                }else{
+                                    $quote->setCustomerFirstname($quote->getBillingAddress()->getFirstname());
+                                    $quote->setCustomerLastname($quote->getBillingAddress()->getLastname());
+                                    $quote->setCustomerEmail($customerEmail);
+                                    $quote->setCustomerIsGuest(true);
+                                }
+                            }
+                            // Save Quote
+                            $quote->save();
+                            $quote->collectTotals()->save();
+                            $result = $this->helper->createOrder($quote);
+                            if ($result['success']) {
+                                $order = $this->orderFactory->create()->loadByIncrementId($result['success']);
+                            }
+                        }
                     }
                     if ($order) {
                         $payment = $order->getPayment();
