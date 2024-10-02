@@ -1,4 +1,4 @@
-![xMoney Crypto integration](https://github.com/user-attachments/assets/66de9ccd-adab-456c-a673-09c20d182c4c)
+![xMoney Crypto integrations](https://github.com/user-attachments/assets/66de9ccd-adab-456c-a673-09c20d182c4c)
 
 # xMoney Crypto for Magento 2
 
