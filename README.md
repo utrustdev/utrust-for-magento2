@@ -1,15 +1,18 @@
-![Utrust integrations](https://user-images.githubusercontent.com/1558992/67495646-1e356b00-f673-11e9-8854-1beac877c586.png)
+![xMoney Crypto integrations](https://github.com/user-attachments/assets/66de9ccd-adab-456c-a673-09c20d182c4c)
 
-# Utrust for Magento 2.4
+# xMoney Crypto for Magento 2
 
-Accept Bitcoin, Ethereum, Utrust Token and other cryptocurrencies directly on your store with the Utrust payment gateway for Magento.
-Utrust is cryptocurrency agnostic and provides fiat settlements.
-The Utrust plugin extends Magento allowing you to take cryptocurrency payments directly on your store via the Utrust API.
-Find out more about Utrust at [utrust.com](https://utrust.com).
+Accept Bitcoin, Ethereum, eGLD, UTK Token, and other juicy cryptocurrencies directly on your online store and get settled in the currency of your choice.
+
+With xMoney Crypto Pay, grow your business by allowing your customers to enjoy a vast portfolio of fiat & crypto currencies when purchasing goods and services, with a zero-fee exchange rate.
+
+Find out more at [xMoney.com/crypto-pay](https://xmoney.com/crypto-pay)
+
+xMoney is the world's digital payments network for all things money. Crypto-enabled & Fiat-ready, with a suite of solutions for anyone, anywhere. Powered by [MultiversX](https://multiversx.com/).
 
 ## Requirements
 
-- Utrust Merchant account
+- xMoney Crypto Merchant account
 - Online store in Magento 2.4.x or 2.3.x
 
 ## Install and Update
@@ -18,7 +21,7 @@ Find out more about Utrust at [utrust.com](https://utrust.com).
 
 You will need FTP and SSH access to install this module:
 
-1. Download our latest release zip file on the [releases page](https://github.com/utrustdev/utrust-for-magento2/releases) or [Utrust Payment extension page](https://marketplace.magento.com/utrust-module-payment.html).
+1. Download our latest release zip file on the [releases page](https://github.com/utrustdev/utrust-for-magento2/releases).
 2. Unzip the zip file in `app/code/Utrust/Payment`.
 3. Enable the module by running `bin/magento module:enable Utrust_Payment`
 4. Apply database updates by running `bin/magento setup:upgrade`
@@ -48,7 +51,7 @@ bin/magento setup:static-content:deploy -f
 
 ### On the Utrust side
 
-1. Go to [Utrust merchant dashboard](https://merchants.utrust.com).
+1. Go to [xMoney Crypto merchant dashboard](https://merchants.crypto.xmoney.com/).
 2. Log in or sign up if you didn't yet.
 3. On the left sidebar choose _Integrations_.
 4. Select _Magento 2_ and click the button _Generate Credentials_.
@@ -78,7 +81,7 @@ bin/magento setup:static-content:deploy -f
 
 Feel free to reach [by opening an issue on GitHub](https://github.com/utrustdev/utrust-for-magento2/issues/new) if you need any help with the Utrust for Magento 2 plugin.
 
-If you're having specific problems with your account, then please contact support@utrust.com.
+If you're having specific problems with your account, then please contact [support@xmoney.com](https://mailto:support@xmoney.com/).
 
 In both cases, our team will be happy to help :purple_heart:.
 
@@ -110,6 +113,6 @@ To publish a new version, simply follow [these instructions](https://github.com/
 
 ## License
 
-The Utrust for Magento 2 plugin is maintained with :purple_heart: by the Utrust development team, and is available to the public under the GNU GPLv3 license. Please see [LICENSE](https://github.com/utrustdev/utrust-for-magento2/blob/master/LICENSE) for further details.
+The Xmoney Crypto for Magento 2 plugin is maintained with :purple_heart: by the xMoney development team, and is available to the public under the GNU GPLv3 license. Please see [LICENSE](https://github.com/utrustdev/utrust-for-magento2/blob/master/LICENSE) for further details.
 
-&copy; Utrust 2021
+&copy; Utrust 2024

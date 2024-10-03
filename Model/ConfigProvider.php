@@ -66,7 +66,7 @@ class ConfigProvider implements ConfigProviderInterface
             'payment' => [
                 self::CODE => [
                     'redirectUrl' => $this->url->getUrl('utrust/payment/redirect'),
-                    'logoUrl' => $this->ccConfig->getViewFileUrl('Utrust_Payment::images/utrust-logo.png'),
+                    'logoUrl' => $this->ccConfig->getViewFileUrl('Utrust_Payment::images/xmoney-logo.png'),
                     'instructions' => $this->config->getInstructions(),
                     'flow'=> $this->helper->getConfig('payment/utrust/checkout_flow/flow'),
                 ],
