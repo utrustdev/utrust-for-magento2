@@ -113,6 +113,6 @@ To publish a new version, simply follow [these instructions](https://github.com/
 
 ## License
 
-The Utrust for Magento 2 plugin is maintained with :purple_heart: by the Utrust development team, and is available to the public under the GNU GPLv3 license. Please see [LICENSE](https://github.com/utrustdev/utrust-for-magento2/blob/master/LICENSE) for further details.
+The Xmoney Crypto for Magento 2 plugin is maintained with :purple_heart: by the xMoney development team, and is available to the public under the GNU GPLv3 license. Please see [LICENSE](https://github.com/utrustdev/utrust-for-magento2/blob/master/LICENSE) for further details.
 
 &copy; Utrust 2024
