@@ -10,7 +10,7 @@ class Response extends \Magento\Framework\App\Action\Action
     protected $checkoutSession;
     protected $helper;
     protected $guestCart;
-    protected $_cookieManager;
+    protected $cookieManager;
     private $cookieMetadataFactory;
     protected $collection;
     protected $orderRepository;
