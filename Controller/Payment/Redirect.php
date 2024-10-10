@@ -10,7 +10,8 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
     protected $api;
 
-    protected $_cookieManager;
+    protected $cookieManager;
+    
     private $cookieMetadataFactory;
 
     /**
