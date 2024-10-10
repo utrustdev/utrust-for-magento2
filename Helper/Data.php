@@ -3,6 +3,14 @@ namespace Utrust\Payment\Helper;
 
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {   
+    protected $storeManager;
+    protected $customerFactory;
+    protected $productRepository;
+    protected $customerRepository;
+    protected $quote;
+    protected $quoteManagement;
+    protected $orderSender;
+    
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
